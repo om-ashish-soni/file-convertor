@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV to PSV Converter</title>
+</head>
+<body>
+    <input type="file" id="fileInput" accept=".csv">
+    <button onclick="csv2dat()">Convert and Download Dat</button>
+
+    <script>
+        function csv2dat() {
+            const fileInput = document.getElementById('fileInput');
+            
+            // Check if a file is selected
+            if (fileInput.files.length === 0) {
+                alert('Please select a file.');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                // Get the content of the file
+                const csvContent = event.target.result;
+
+                // Replace commas with pipes
+                const psvContent = csvContent.replace(/,/g, '|');
+
+                // Create a Blob with the PSV content
+                const blob = new Blob([psvContent], { type: 'text/plain' });
+
+                // Create a download link and trigger the download
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = file.name.replace('.csv', '.dat');
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            };
+
+            // Read the file as text
+            reader.readAsText(file);
+        }
+    </script>
+</body>
+</html>
