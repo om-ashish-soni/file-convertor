@@ -26,11 +26,14 @@
                 // Get the content of the file
                 const csvContent = event.target.result;
 
-                // Replace commas with pipes
-                const psvContent = csvContent.replace(/,/g, '|');
+                // Replace commas outside of double-quoted strings with pipes
+                const psvContent = csvContent.replace(/("[^"]*")|,/g, (match, p1) => p1 ? p1.replace(/"/g, '') : '|');
 
-                // Create a Blob with the PSV content
-                const blob = new Blob([psvContent], { type: 'text/plain' });
+                // Trim the content to remove trailing spaces and new lines
+                const trimmedContent = psvContent.trim();
+
+                // Create a Blob with the trimmed PSV content
+                const blob = new Blob([trimmedContent], { type: 'text/plain' });
 
                 // Create a download link and trigger the download
                 const a = document.createElement('a');
